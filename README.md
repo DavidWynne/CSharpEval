@@ -8,10 +8,10 @@ The CSharpEval source code can be included into any C# program. It gives you the
 
 #Why is this useful?
 
-  *Ideal for implementing small Domain Specific Languages (DSL): It allows you to compile from the DSL code to standard C# code, instead of having to compile all the way from the DSL code to Microsoft Intermediate Language (MIL) instructions.
-  *Great for meta-programming in the .Net environment: Instead of using lots of Reflection calls such as Type.GetField, Type.GetMethod, Activator.CreateInstance, GetValue and Invoke,you simply compose a small C# source code method and evaluate it using CSharpEval to create a dynamic method delegate.
-  *Extremely handy for debugging tasks which require deep on-the-fly analysis of complex data structures: Instead of using the symbolic debugger to laboriously track through layers of references and manually scanning large arrays, you can run the C# REPL and compose a method in C# to query and present the required data. The call to the REPL dialog can be placed into the source code at the point of interest before compiling the program, or it could be inserted at debug time.
-  *There are rumors on the Web that version 5 or so of C# will include Compiler-as-a-Service capabilities. Presumably this includes Eval and maybe some sort of REPL. So get yourself a head start!
+* Ideal for implementing small Domain Specific Languages (DSL): It allows you to compile from the DSL code to standard C# code, instead of having to compile all the way from the DSL code to Microsoft Intermediate Language (MIL) instructions.
+* Great for meta-programming in the .Net environment: Instead of using lots of Reflection calls such as Type.GetField, Type.GetMethod, Activator.CreateInstance, GetValue and Invoke,you simply compose a small C# source code method and evaluate it using CSharpEval to create a dynamic method delegate.
+* Extremely handy for debugging tasks which require deep on-the-fly analysis of complex data structures: Instead of using the symbolic debugger to laboriously track through layers of references and manually scanning large arrays, you can run the C# REPL and compose a method in C# to query and present the required data. The call to the REPL dialog can be placed into the source code at the point of interest before compiling the program, or it could be inserted at debug time.
+* There are rumors on the Web that version 5 or so of C# will include Compiler-as-a-Service capabilities. Presumably this includes Eval and maybe some sort of REPL. So get yourself a head start!
 
 #How complete is this compiler?
 
@@ -26,45 +26,45 @@ Download the zipped file called c-sharp-rep.zip. This contains an exe file which
 
 So unzip and run this program (no installation is required). You will be presented with an empty edit box. To start things off, enter the universal REPL test:
 
-'''
+```
 2+2
-'''
+```
 
 Press shift return (don't forget the shift!) and it will print out 4. Or enter the following (including quotes)
 
-'''
+```
 "Hello World!"
-'''
+```
 
 and press shift return.
 
 Let's try a more complicated expression:
 
-'''
+```
 "Number=" + (20.2 * (3.4 + 5.5) - "A String".Length).ToString()
   + " Date and Time=" + DateTime.Now
-'''
+```
 
 If there is a syntax error a separate dialog box will pop up telling you of the error. Dismiss this dialog, fix the code and try again. When the code is correct the REPL will compile the method and return with a success message. One possible source of errors is when a unicode character whose index is outside of the standard ascii range is inadvertently used. For example using En dash (code 8211) instead of the minus sign. In such cases you will have to manually edit the input to use the ascii characater.
 
 We shall now code everybody's favourite recursive method:
 
-'''
+```
 public int Fib(int i)
  {
    if (i == 0) return 0;
    if (i == 1) return 1;
    return Fib(i - 1) + Fib(i - 2);
  }
-'''
+```
 
 Hint: a limited set of copy and paste editing operations are supported. So copy the above code into the clipboard, then click on the edit box in the REPL window, and press shift-insert. You can also use the mouse to highlight text in the REPL window. Position the mouse onto the text, hold the left button down and drag. Now doing a ctrl-shift will copy the text into the clipboard. Once the text is in the REPL window you do basic editing operations on it. The full range of (say) Visual Studio text editing abilities is not available; but you could always add them yourself:).
 
 Now position the cursor onto any line of this method and press shift enter. It will hopefully be compiled. Enter the expression:
 
-'''
+```
 Fib(40)
-'''
+```
 
 And press shift return. Now wait...
 
@@ -77,34 +77,45 @@ Entering a field
 
 To add a field we type (for example)
 
+```
 public int NewInt ;
+```
 
 The trailing semicolon is important; it signals to the REPL code that this is a field definition and not something else.
 
 CSharpEval compiler will now accept something like
 
+```
 public int Increment ( )
  { NewInt = NewInt + 1 ; return NewInt ; }
+```
 
-It pretends that NewInt is an instance field. Behind the scenes the NewInt field is an element of a list (more about this in the next article) and each reference to NewInt fetches or stores this element. In this case, since NewInt is a value type, each fetch and store will be accompanied by unboxing and boxing operations.
+It pretends that NewInt is an instance field. Behind the scenes the NewInt field is an element of a list (more about this in the next part) and each reference to NewInt fetches or stores this element. In this case, since NewInt is a value type, each fetch and store will be accompanied by unboxing and boxing operations.
 
 Test this method by entering:
 
+```
 NewInt = 111 ;
   Increment () ;
+```
 
 and pressing shift enter. Now type
 
+```
 NewInt
+```
 
 and press shift enter. The number 112 should be printed.
 
 Note that the statement
 
+```
 int NewInt ;
+```
 
 will also be accepted but it will not appear to do anything. This is because, without the public keyword in front of it, the REPL assumes this is a statement. REPL will take this statement, place it inside a method and compile and execute the method. Since this method has only a single local variable and does nothing else, then nothing will happen.
-Some implementation detail
+
+#Some implementation detail
 
 CSharpEval can compile stand-alone methods. It can also compile a group of methods and fields and pretend that they are part of an existing class. An instance of this existing class is supplied by the calling code when calling the CSharpEval API.
 
@@ -113,75 +124,96 @@ Timing
 
 Enter the text
 
+```
 StopwatchOn
+```
 
 And press shift return. The word False will appear on the next line and a cursor will then move to a new edit box. This represents the current value of the StopwatchOn field in the REPL module.
 
 Now enter
 
+```
 StopwatchOn = true ;
+```
 
 And press shift return. This will set the field to true, and so it will now print out a line stating how long in microseconds it took to evaluate. It then prints out Done to say it has done the statement just entered.
 
 Now enter the following:
 
+```
 public string IsStopwatchOn ()
  {
    return StopwatchOn ? "Yes" : "No" ;
  }
+```
 
 and press shift return. Now type in the expression
 
+```
 IsStopwatchOn()
+```
 
 without a semicolon. On pressing shift return the text Yes should be displayed.
 
 You could go back to the edit box with this method text in it, and alter the return statement, perhaps to
 
+```
 return StopwatchOn ?
    "Yes, it is on" :
    "No, you just turned it off" ;
+```
 
 Press shift return and the method will be updated to this new code. Now go to the IsStopwatchOn() expression and press shift return again. The new message should be printed. You can turn off the StopwatchOn flag and test again to see the expected result.
-Summary so far
 
-    To enter an expression for immediate evaluation, type the expression and press shift return. The expression may run across more than one line. Do not terminate the expression with a semicolon.
-    To enter a statement for immediate evaluation, type the statement and terminate with a semicolon. Then press shift return. Multiple statements may be typed in at once, and may run over more than one line.
-    To enter a field declaration, type it in as a Type and the name, then terminate with a semicolon. A preceding public or private keyword is required. Then press shift return. If the initial public or private key word is not used, then the REPL will assume this is a statement, and will appear to do nothing.
-    To enter a method, type in the full method, always starting with either a private or public keyword. Then press shift return. The REPL editor will count open and close curly brackets and it will only compile the method when all of the brackets are properly matching.
-    Multiple fields and methods can be entered into the one edit box. Just enter them and when finished, press shift return.
+#Summary so far
 
-Saving and restoring your work
+* To enter an expression for immediate evaluation, type the expression and press shift return. The expression may run across more than one line. Do not terminate the expression with a semicolon.
+* To enter a statement for immediate evaluation, type the statement and terminate with a semicolon. Then press shift return. Multiple statements may be typed in at once, and may run over more than one line.
+* To enter a field declaration, type it in as a Type and the name, then terminate with a semicolon. A preceding public or private keyword is required. Then press shift return. If the initial public or private key word is not used, then the REPL will assume this is a statement, and will appear to do nothing.
+* To enter a method, type in the full method, always starting with either a private or public keyword. Then press shift return. The REPL editor will count open and close curly brackets and it will only compile the method when all of the brackets are properly matching.
+* Multiple fields and methods can be entered into the one edit box. Just enter them and when finished, press shift return.
+
+#Saving and restoring your work
 
 The user can save and restore the contents of the REPL window, and can also copy the contents to a .cs file. The following commands at the REPL command prompt are provided:
 
+```
 SaveImage ( some_file_name );
+```
 
 This will save the current contents of the REPL window to the given file.
 
+```
 RestoreImage ( some_file_name) ;
+```
 
 This will restore the contents from the file to the REPL window, erasing the current contents.
 
 Note that this only restores the declared methods and fields, and the contents of the edit boxes in the REPL window. It will not fill in the field values, so they will all be either null or 0.
 
+```
 SaveCode ( some_file_name);
+```
 
 This writes the fields and methods to the filename in standard C# format.
 
 The REPL program is mainly present as a means of testing the Eval compiler, although as I point out in the introduction it can also be used for debugging program data. It is probably too limited to be able to be used for writing much production code. However, assuming that the nature of the programming task lends itself to this pattern, you could make use of the above commands and use the REPL to write and incrementally test a C# module.
 
 When it is working to some degree you would use SaveCode () to write the new source to a file, then copy and paste this into the final program.
-How fast is this code?
+
+#How fast is this code?
 
 In the above a Fibonacci method was used as an example. On my machine it takes about 15 seconds to do Fib(40). Just by chance there is a Fib method in the CSharpEval source code. It is in the TestProgram class of the full test version. It is a public static method, and so we can call it from the REPL code:
 
+```
 TestProgram.Fib(40)
+```
 
 So pressing Enter here will result in this statement being compiled into a method, and executed. This code will call the Fib method in the parent program. On my machine this call takes 11.4 seconds in debug mode, and 1.4 seconds in optimized mode, and, of course, it generates the same number.
 
 Let's optimize the first Fib function by making it iterative:
 
+```
 public int Fib ( int n )
  {
    if (n<= 1) return n ;
@@ -194,11 +226,13 @@ public int Fib ( int n )
    }
    return last ;
  }
+```
 
 Copy and paste this into a new edit box in the REPL, and run it. It should generate the same result but only take 6.4 milliseconds. Running the FibIterative method already supplied in the TestProgram class takes about 0.7 millseconds.
 
 Finally, enter the following method:
 
+```
 public long TestTiming ( int n )
  {
    long total = 0 ;
@@ -207,14 +241,19 @@ public long TestTiming ( int n )
    }
    return total ;
   }
+```
 
 and press shift enter. Then enter the statement
 
+```
 TestTiming ( 100000000 ) ;
+```
 
 It will take (on my machine) about 2.1 seconds. Running the same routine which has been placed into the TestProgram class, as in
 
+```
 TestProgram.TestTiming ( 100000000 ) ;
+```
 
 takes (on my machine with the compiler optimize flag on) about 1.6 seconds.
 
@@ -222,33 +261,37 @@ You can look at the compiled MIL code produced by the CSharpEval. Just enter Mak
 
 So in conclusion:
 
-    CSharpEval compiled methods that makes many calls to other compiled methods will be slower, up to a factor of 10 or so. This most likely results from each call having to access the MethodTable list. This slow-down may be comparable to the slow-down when the C# compiler inserts debug statements into code.
-    Code that executes many cycles within a single method can be almost as fast as the proper C# compiled code.
+* CSharpEval compiled methods that makes many calls to other compiled methods will be slower, up to a factor of 10 or so. This most likely results from each call having to access the MethodTable list. This slow-down may be comparable to the slow-down when the C# compiler inserts debug statements into code.
+* Code that executes many cycles within a single method can be almost as fast as the proper C# compiled code.
 
- This article describes the API, while the next article gives detailed examples.
-Some features
+# The API
 
-    Copyrighted under the MIT open source license, and thus usable in any situation, commercial or not.
-    The CSharpEval compiled code has full access to the public types and variables of the parent program.
-    Uses dynamic methods and so is garbage collected, unlike using the CodeDomProvider compilation of a separate assembly.
-    Small footprint, between 5000 lines of source code in its minimal configuration to about 10000 lines in the full C# Repl configuration. It is light enough to be included into the average .Net program without significant penalty. However it cannot be used in the .Net compact framework, or the .Net micro framework, as they do not support dynamic method compilation.
-    Requires the .Net framework version 3.5.
-    Does not implement the full C# language; however it does implement a very useful subset. In particular it does not implement any of Linq, yield return or exception handling. The standard vanilla features of C# such as statements, expressions, conditionals, loops, and the most commonly used operators, etc are supported.
-    Built on top of the basic CSharpEval system is a Repl, with its own user interface. You can create variables and manipulate them, enter or edit methods and call them. The entered code can be saved to disk and restored.
+This part describes the API, while the last part describes detailed examples.
+
+#Some features
+
+*Copyrighted under the MIT open source license, and thus usable in any situation, commercial or not.
+*The CSharpEval compiled code has full access to the public types and variables of the parent program.
+*Uses dynamic methods and so is garbage collected, unlike using the CodeDomProvider compilation of a separate assembly.
+*Small footprint, between 5000 lines of source code in its minimal configuration to about 10000 lines in the full C# Repl configuration. It is light enough to be included into the average .Net program without significant penalty. However it cannot be used in the .Net compact framework, or the .Net micro framework, as they do not support dynamic method compilation.
+*Requires the .Net framework version 3.5.
+*Does not implement the full C# language; however it does implement a very useful subset. In particular it does not implement any of Linq, yield return or exception handling. The standard vanilla features of C# such as statements, expressions, conditionals, loops, and the most commonly used operators, etc are supported.
+*Built on top of the basic CSharpEval system is a Repl, with its own user interface. You can create variables and manipulate them, enter or edit methods and call them. The entered code can be saved to disk and restored.
 
 Of course, nothing is without cost, even if it is free:
 
-    This code is produced by me in my spare time, so it is not quite up to the usual Microsoft's .Net compiler quality standards. There will be bugs (absolute guarantee!). But the full source code is available so anyone can potentially fix the bugs.
-    The syntax probably deviates from the officially defined syntax, especially in edge cases.
-    The intermediate language emitted is not optimal; however it is not excessively slow either.
-    Only publicly accessible members of types can be compiled and used, just like using the normal C# compiler. Thus trying to use the Repl to debug objects by looking at their private fields can be problematical.
-    The compiled code cannot be debugged by standard debuggers; you have to use print (or MessageBox.Show) statements.
-    In other words this is only a poor-man's version of the anticipated Compiler-as-a-Service; but it is all we might have until C# version 5.0.
+*This code is produced by me in my spare time, so it is not quite up to the usual Microsoft's .Net compiler quality standards. There will be bugs (absolute guarantee!). But the full source code is available so anyone can potentially fix the bugs.
+*The syntax probably deviates from the officially defined syntax, especially in edge cases.
+*The intermediate language emitted is not optimal; however it is not excessively slow either.
+*Only publicly accessible members of types can be compiled and used, just like using the normal C# compiler. Thus trying to use the Repl to debug objects by looking at their private fields can be problematical.
+*The compiled code cannot be debugged by standard debuggers; you have to use print (or MessageBox.Show) statements.
+*In other words this is only a poor-man's version of the anticipated Compiler-as-a-Service; but it is all we might have until C# version 5.0.
 
-Security considerations
+#Security considerations
 
 Before we proceed I wish to remind all developers to never ever directly expose the C# Eval interface to anonymous users. Direct evaluation of arbitrary C# code is an excellent vector for un-authorised access to your machine! Make sure that all input from anonymous users is heavily pre-processed to prevent any such attacks.
-Setting up a demonstration C# project with CSharpEval
+
+#Setting up a demonstration C# project with CSharpEval
 
 The steps needed to get an initial stand-alone version running on your machine are:
 
