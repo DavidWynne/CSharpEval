@@ -270,22 +270,22 @@ This part describes the API, while the last part describes detailed examples.
 
 #Some features
 
-*Copyrighted under the MIT open source license, and thus usable in any situation, commercial or not.
-*The CSharpEval compiled code has full access to the public types and variables of the parent program.
-*Uses dynamic methods and so is garbage collected, unlike using the CodeDomProvider compilation of a separate assembly.
-*Small footprint, between 5000 lines of source code in its minimal configuration to about 10000 lines in the full C# Repl configuration. It is light enough to be included into the average .Net program without significant penalty. However it cannot be used in the .Net compact framework, or the .Net micro framework, as they do not support dynamic method compilation.
-*Requires the .Net framework version 3.5.
-*Does not implement the full C# language; however it does implement a very useful subset. In particular it does not implement any of Linq, yield return or exception handling. The standard vanilla features of C# such as statements, expressions, conditionals, loops, and the most commonly used operators, etc are supported.
-*Built on top of the basic CSharpEval system is a Repl, with its own user interface. You can create variables and manipulate them, enter or edit methods and call them. The entered code can be saved to disk and restored.
+* Copyrighted under the MIT open source license, and thus usable in any situation, commercial or not.
+* The CSharpEval compiled code has full access to the public types and variables of the parent program.
+* Uses dynamic methods and so is garbage collected, unlike using the CodeDomProvider compilation of a separate assembly.
+* Small footprint, between 5000 lines of source code in its minimal configuration to about 10000 lines in the full C# Repl configuration. It is light enough to be included into the average .Net program without significant penalty. However it cannot be used in the .Net compact framework, or the .Net micro framework, as they do not support dynamic method compilation.
+* Requires the .Net framework version 3.5.
+* Does not implement the full C# language; however it does implement a very useful subset. In particular it does not implement any of Linq, yield return or exception handling. The standard vanilla features of C# such as statements, expressions, conditionals, loops, and the most commonly used operators, etc are supported.
+* Built on top of the basic CSharpEval system is a Repl, with its own user interface. You can create variables and manipulate them, enter or edit methods and call them. The entered code can be saved to disk and restored.
 
 Of course, nothing is without cost, even if it is free:
 
-*This code is produced by me in my spare time, so it is not quite up to the usual Microsoft's .Net compiler quality standards. There will be bugs (absolute guarantee!). But the full source code is available so anyone can potentially fix the bugs.
-*The syntax probably deviates from the officially defined syntax, especially in edge cases.
-*The intermediate language emitted is not optimal; however it is not excessively slow either.
-*Only publicly accessible members of types can be compiled and used, just like using the normal C# compiler. Thus trying to use the Repl to debug objects by looking at their private fields can be problematical.
-*The compiled code cannot be debugged by standard debuggers; you have to use print (or MessageBox.Show) statements.
-*In other words this is only a poor-man's version of the anticipated Compiler-as-a-Service; but it is all we might have until C# version 5.0.
+* This code is produced by me in my spare time, so it is not quite up to the usual Microsoft's .Net compiler quality standards. There will be bugs (absolute guarantee!). But the full source code is available so anyone can potentially fix the bugs.
+* The syntax probably deviates from the officially defined syntax, especially in edge cases.
+* The intermediate language emitted is not optimal; however it is not excessively slow either.
+* Only publicly accessible members of types can be compiled and used, just like using the normal C# compiler. Thus trying to use the Repl to debug objects by looking at their private fields can be problematical.
+* The compiled code cannot be debugged by standard debuggers; you have to use print (or MessageBox.Show) statements.
+* In other words this is only a poor-man's version of the anticipated Compiler-as-a-Service; but it is all we might have until C# version 5.0.
 
 #Security considerations
 
@@ -295,47 +295,56 @@ Before we proceed I wish to remind all developers to never ever directly expose 
 
 The steps needed to get an initial stand-alone version running on your machine are:
 
-    Download the source code. This is a zip file containing a loose collection of .cs text files.
-    Open your version of Visual Studio 2008 or 2010 and make a new C# project. Select the project kind to be WPF Application. Make sure you are using version 3.5 (or later) of the .Net Framework.
-    After the project is created, go to the Solutions Explorer and delete the Window1.xaml files and the App.xaml file. The CSharpEval code supplies its own windowing and startup code.
-    Into this empty project copy the .cs files from the downloaded zip file.
-    Double click on the Properties folder in this project, and in the properties page click on the Build tab. In the build page enter the following text Class;Dialog;Repl;Test into the Conditional compilation symbols edit box.
-    Compile and run.
-    If you are using some other editor, you will need to take the appropriate steps to end up with a compiled WPF application using these files.
+* Download the source code. This is a zip file containing a loose collection of .cs text files.
+* Open your version of Visual Studio 2008 or 2010 and make a new C# project. Select the project kind to be WPF Application. Make sure you are using version 3.5 (or later) of the .Net Framework.
+* After the project is created, go to the Solutions Explorer and delete the Window1.xaml files and the App.xaml file. 
+
+The CSharpEval code supplies its own windowing and startup code.
+
+* Into this empty project copy the .cs files from the downloaded zip file.
+* Double click on the Properties folder in this project, and in the properties page click on the Build tab. In the build page enter the following text Class;Dialog;Repl;Test into the Conditional compilation symbols edit box.
+* Compile and run.
+* If you are using some other editor, you will need to take the appropriate steps to end up with a compiled WPF application using these files.
 
 If all is well, the program will first run through its unit tests of its compiler, and then it will bring up the Repl dialog box. If you get to this point then you have a working copy. Now we need to talk about the different configurations that are possible.
-Different configurations
+
+#Different configurations
 
 The CSharpEval project code can be configured in several ways. The minimal configuration provides only the compiler to turn the source code of a method into a delegate. The maximal configuration provides unit tests plus the full Repl environment together with dialogs for reporting compilation errors. The user chooses which configuration they want by the use of the conditional compilation symbols.
 
-    The Class;Dialog;Repl;Test sets up the full configuration. This uses all of the code in the zip file, except that each configuration has its own program file. This version of the program does all of the unit tests, then runs the Repl environment.
-    To run just the Repl without the unit tests, use the conditional compile symbols Class;Dialog;Repl. This configuration is what is used as the Repl program in the first article.
-    If you do not want to use the Repl in your application, but you do want to be able to create multiple methods that act as if they belong to an existing type, use the symbols Class;Dialog.
-    If you only want to create individual methods, use the symbol Dialog.
+* The Class;Dialog;Repl;Test sets up the full configuration. This uses all of the code in the zip file, except that each configuration has its own program file. This version of the program does all of the unit tests, then runs the Repl environment.
+* To run just the Repl without the unit tests, use the conditional compile symbols Class;Dialog;Repl. This configuration is what is used as the Repl program in the first article.
+* If you do not want to use the Repl in your application, but you do want to be able to create multiple methods that act as if they belong to an existing type, use the symbols Class;Dialog.
+* If you only want to create individual methods, use the symbol Dialog.
 
 In the first two cases above the Dialog symbol is essential. In the second two cases this symbol is optional. If it is used then error reporting is done by the pre-supplied error dialog. If this Dialog symbol is not used then:
 
-    If you want to compile methods to classes but use your own error logging, use the symbol Class.
-    If you want to compile single methods only and use your own error logging, do not use any conditional compile symbols at all. This last is the smallest configuration.
+* If you want to compile methods to classes but use your own error logging, use the symbol Class.
+* If you want to compile single methods only and use your own error logging, do not use any conditional compile symbols at all. This last is the smallest configuration.
 
 Each of these configurations has its own Program file, thus allowing the configuration to be a stand-alone program. One of these configurations includes the units tests; normally you would not put these into any production program. The source code for the other four configurations can be placed into a production program. You will need to remove the Program file for each such configuration; the setup code in each has to be copied across to your code and modified to suit your needs.
-The Repl evaluation process
+
+#The Repl evaluation process
 
 Running the CsharpEval code in the Repl configuration allows you to enter C# code and have it executed immediately. Behind the scenes the Repl program takes your code, surrounds it with some extra code and then compiles and runs it. If the code you type in is an expression, then the Repl will generate the following code:
 
+```
 partial class REPL {
    public string DoExpression () {
      return (Expression-goes-here).ToString() ;
    }
  }
+```
 
 while a statement is turned into
 
+```
 partial class REPL {
    public void DoStatement () {
      Statement-goes-here
    }
  }
+```
 
 These methods are then compiled by the CSharpEval and then executed. In the case of the expression, the return result is printed to the Repl window.
 
@@ -343,30 +352,36 @@ Notice the partial class REPL in the above. The basic purpose of the CSharpEval 
 
 So either of the above methods are compiled to a dynamic method which pretends it is a method of the class REPL. This class happens to be the class that implements the Repl functionality. So the compiled code can directly access the fields and methods of the Repl module. As an example, if the statement
 
+```
 StopwatchOn = true ;
+```
 
 is typed into the command line, it will turn on the StopwatchOn flag in the Repl class. When this flag is true the Repl will print the time taken to evaluate each Repl request.
 
 The REPL class is used here since that is what implements the Repl and it is most convenient to allow code entered into the Repl window to directly access the Repl internals. When calling the CSharpEval compiler directly in production code, the user programmer can specify any class. The only requirement is that this class must have a field like the following
 
+```
 public List<object> Fields ;
+```
 
 if the programmer wants to add fields as well as methods. If the programmer does not want to add fields this is not required.
-Using Eval
+
+#Using Eval
 
 The main use of this system is to programmatically compose some source code, then compile it and obtain a delegate.
 
-    To do this you need to include the CSharpEval source files into your program. You may either put the files into their own project (as either an application or library), or they may be included as is into one of you project files.
-    You need to decide which configuration to use.
-    You need to create a TypeParser instance, which specifies the assemblies and namespaces that the CSharpEval compiler will access. More about this below.
-    If you are not using the in-built error reporting dialogs, you need to specify your own.
-    If you are using any of the Dialog configurations, you need to specify the filename of the file to which the dialog window positions and sizes are persisted.
-    If you are using the ability to compile methods and fields to an existing class, you will need to create that class.
-    You need to programmatically generate the source code. The CSharpEval only accepts source in the form of lexical tokens, so you compose the source as string fragments or tokens and call upon the LexListBuilder class to generate a LexList.
-    Finally you need to call MakeMethod or MakeClass to actually compile your generated source, and then retrieve and use the delegates.
+* To do this you need to include the CSharpEval source files into your program. You may either put the files into their own project (as either an application or library), or they may be included as is into one of you project files.
+* You need to decide which configuration to use.
+* You need to create a TypeParser instance, which specifies the assemblies and namespaces that the CSharpEval compiler will access. More about this below.
+* If you are not using the in-built error reporting dialogs, you need to specify your own.
+* If you are using any of the Dialog configurations, you need to specify the filename of the file to which the dialog window positions and sizes are persisted.
+* If you are using the ability to compile methods and fields to an existing class, you will need to create that class.
+* You need to programmatically generate the source code. The CSharpEval only accepts source in the form of lexical tokens, so you compose the source as string fragments or tokens and call upon the LexListBuilder class to generate a LexList.
+* Finally you need to call MakeMethod or MakeClass to actually compile your generated source, and then retrieve and use the delegates.
 
 This sounds complicated, but don't worry. In the following article I will provide boiler-plate code for all of this. For now, however, we will continue with the documentation of the API.
-TypeParser
+
+#TypeParser
 
 Every real C# program needs to have a list of references specifying which assemblies are to be included into the final compilation. Each source file in a C# program can have a list of using statements, which specify which namespaces are to be used without having to explicitly specify the full namespace name.
 
@@ -376,6 +391,7 @@ The references and using information is stored in an instance of a class called 
 
 The following demonstrates the construction of a TypeParser instance:
 
+```
 TypeParser parser = new TypeParser(
    Assembly.GetExecutingAssembly(),
    new List<string>()
@@ -393,6 +409,7 @@ TypeParser parser = new TypeParser(
      "Kamimu"
    }
  );
+```
 
 The first parameter to the TypeParser constructor is an Assembly, which will normally be the currently executing assembly. The TypeParser code will use this assembly, plus all assemblies directly accessed by this assembly, during the compilation process.
 
@@ -400,32 +417,40 @@ The second parameter to the constructor is a list of namespaces. This correspond
 
 The constructed parser instance can now be passed to calls to the CsharpEval API methods. It can also be assigned to a static field in the TypeParser class, as in
 
+```
 TypeParser.DefaultParser = parser;
+```
 
 This default parser is used by some of the CsharpEval methods.
-Lexical analysis
+
+#Lexical analysis
 
 The CSharpEval compiler takes the source in the form of a LexList instance. A LexList instance is a list of tokens of type LexToken. To build the final LexList the helper class LexListBuilder is used. The typical pattern of use for this builder is
 
+```
 LexListBuilder lb = new LexListBuilder();
  lb.Add(some_string);
  lb.Add(another_string).Add(another_string2);
  return lb.ToLexList();
+```
 
 where there can be any number of Add's to append more strings. There are some variations on the Add method:
 
-    There are overrides that allow the adding of an existing LexList or existing LexListBuilder instance.
-    When adding a string you can specify parameters in the string which will be expanded out to their final values. For example,
+* There are overrides that allow the adding of an existing LexList or existing LexListBuilder instance.
+* When adding a string you can specify parameters in the string which will be expanded out to their final values. For example,
 
+```
 lb.Add("public int 'FunctionName ( int i )" ,
  "FunctionName", the_Name)
+```
 
 Here you are creating the method header of the method to be compiled. Rather than use string concatenation to include the method's name, you can use a parameter name (in this case FunctionName). The single quote mark in front of it indicates to the Lexical stage that this is a parameter. The parameter value will be taken from the remaining arguments to the Add call. These arguments are inserted in pairs, the first is the name of the parameter (without the quote mark) and the second is the expansion value.
 
 Any number of parameters may be used in a single call. A parameter name may be used more than once in the input string, all occurrences of it will be replaced with the same expansion name.
 
-    As well as strings, you can specify Type values for the parameter expansions. For example:
+* As well as strings, you can specify Type values for the parameter expansions. For example:
 
+```
 LexList MakeTheMethodHeader ( Type theReturnType )
  {
    LexListBuilder lb = new LexListBuilder () ;
@@ -434,39 +459,50 @@ LexList MakeTheMethodHeader ( Type theReturnType )
    // and so on
    return lb.ToLexList() ;
  }
+``` 
 
 Here the programmer wants the return type of the delegate to be the same type as is in the argument theReturnType that is passed into the method. Rather than use the TypeParser instance to generate the text name of this type, then include that into the source (which the TypeParser instance will eventually parse during the compilation process and convert back to a type), the type value is simply supplied as a parameter expansion.
 
 This is very convenient, it ensures that the type you want is what is used, without worrying about whether the TypeParser instance used in the compilation process is set up to reference this type.
 
-    When specifying source code inside text strings, it can become cumbersome to use the double quote escapes. So the LexListBuilder allows quote promotion, where the backward single quote and the normal single quote are used in the text, and the LexListBuilder will promote these quote marks to be normal single quote and a double quote. For example,
+* When specifying source code inside text strings, it can become cumbersome to use the double quote escapes. So the LexListBuilder allows quote promotion, where the backward single quote and the normal single quote are used in the text, and the LexListBuilder will promote these quote marks to be normal single quote and a double quote. For example,
 
+```
 lb.AddAndPromoteQuotes (
  "string s = 'contents' ; char ch = `a` ; " );
+```
 
 Here the string contents will be converted so as to be equivalent to the following call
 
+```
 lb.Add (
  "string s = \"contents\" ; char ch = 'a' ; " );
+```
 
 and the final string contents will therefore be
 
 string s = "contents" ; char ch = 'a' ;
 
-Compiling a method
+#Compiling a method
 
 To compile a single method, use the static method MakeMethod.Compile. This method has a single type parameter which specifies the type of the delegate to be returned. It has two actual parameters, the first is the TypeParser instance, the second is the list of lexical tokens which represents the source code. An example is:
 
+```
 Func<int,string> fn = MakeMethod<Func<int,string>>.Compile (
  parser , theLexList ) ;
+```
 
 The parser contains the TypeParser instance to use, and theLexList contains the lexical list of the source. The delegate is called using the standard C# syntax. For example,
 
+```
 String s = fn ( 234 ) ;
+```
 
 To compile an expression and run it immediately, use the static method MakeMethod.DoExpression (). For example
 
+```
 Double d = MakeMethod.DoExpression<double> ( '23.45 / 32' ) ;
+```
 
 This requires the type parameter to specify the return type. The parser instance is not supplied, instead the default parser instance is used. The source is specified as text, not as a LexList.
 
