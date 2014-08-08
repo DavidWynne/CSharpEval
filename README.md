@@ -1,62 +1,70 @@
-Introduction
+#Introduction
 
 KamimuCode presents CSharpEval, a lightweight C# Eval and Read-Evaluate-Print-Loop (REPL) program.
 
-What is this?
+#What is this?
 
 The CSharpEval source code can be included into any C# program. It gives you the ability to compile the contents of a text string containing some C# code and produce a method delegate. This is done at execution time. This delegate is callable from within the executing program, and the newly compiled code can access any of the public resources of the parent program, such as methods and fields and types.
 
-Why is this useful?
+#Why is this useful?
 
-  Ideal for implementing small Domain Specific Languages (DSL):
-  
-  It allows you to compile from the DSL code to standard C# code, instead of having to compile all the way from the DSL code to Microsoft Intermediate Language (MIL) instructions.
-    Great for meta-programming in the .Net environment:
-        Instead of using lots of Reflection calls such as Type.GetField, Type.GetMethod, Activator.CreateInstance, GetValue and Invoke,you simply compose a small C# source code method and evaluate it using CSharpEval to create a dynamic method delegate.
-    Extremely handy for debugging tasks which require deep on-the-fly analysis of complex data structures:
-        Instead of using the symbolic debugger to laboriously track through layers of references and manually scanning large arrays, you can run the C# REPL and compose a method in C# to query and present the required data. The call to the REPL dialog can be placed into the source code at the point of interest before compiling the program, or it could be inserted at debug time.
-    There are rumors on the Web that version 5 or so of C# will include Compiler-as-a-Service capabilities. Presumably this includes Eval and maybe some sort of REPL. So get yourself a head start!
+  *Ideal for implementing small Domain Specific Languages (DSL): It allows you to compile from the DSL code to standard C# code, instead of having to compile all the way from the DSL code to Microsoft Intermediate Language (MIL) instructions.
+  *Great for meta-programming in the .Net environment: Instead of using lots of Reflection calls such as Type.GetField, Type.GetMethod, Activator.CreateInstance, GetValue and Invoke,you simply compose a small C# source code method and evaluate it using CSharpEval to create a dynamic method delegate.
+  *Extremely handy for debugging tasks which require deep on-the-fly analysis of complex data structures: Instead of using the symbolic debugger to laboriously track through layers of references and manually scanning large arrays, you can run the C# REPL and compose a method in C# to query and present the required data. The call to the REPL dialog can be placed into the source code at the point of interest before compiling the program, or it could be inserted at debug time.
+  *There are rumors on the Web that version 5 or so of C# will include Compiler-as-a-Service capabilities. Presumably this includes Eval and maybe some sort of REPL. So get yourself a head start!
 
-How complete is this compiler?
+#How complete is this compiler?
 
 I do not implement the full C# language in CsharpEval; however I have done my best to implement a very useful subset. In particular I have not attempted to implement any of Linq, nor yield return or exception handling. Neither can you define new classes. The standard vanilla features of C# such as statements, expressions, conditionals, loops, and the most commonly used operators, etc are supported.
 Getting started
 
-For pedagogical purposes I have written a three-part documentation. The first part introduces the C# REPL program; you can put the C# Eval through its paces and see how well it works. The second part discusses the CsharpEval API. The third part gives complete examples on how to use the CsharpEval code in your programs.
+In the following documentation I first introduce the C# REPL program; you can put the C# Eval through its paces and see how well it works. Then the second part discusses the CsharpEval API, and the third part gives complete examples on how to use the CsharpEval code in your programs.
 
-Click on the Download button to download a zipped file containing an exe file. This is an already compiled CsharpEval program that runs the REPL code. Naturally this will only work on a Windows machine. You will also need to have the .NET Framework 3.5 version installed.
+#C# Repl Program
+
+Download the zipped file called c-sharp-rep.zip. This contains an exe file which is an already compiled CsharpEval program that runs the REPL code. Naturally this will only work on a Windows machine. You will also need to have the .NET Framework 3.5 version installed.
 
 So unzip and run this program (no installation is required). You will be presented with an empty edit box. To start things off, enter the universal REPL test:
 
+'''
 2+2
+'''
 
 Press shift return (don't forget the shift!) and it will print out 4. Or enter the following (including quotes)
 
+'''
 "Hello World!"
+'''
 
 and press shift return.
 
 Let's try a more complicated expression:
 
+'''
 "Number=" + (20.2 * (3.4 + 5.5) - "A String".Length).ToString()
   + " Date and Time=" + DateTime.Now
+'''
 
 If there is a syntax error a separate dialog box will pop up telling you of the error. Dismiss this dialog, fix the code and try again. When the code is correct the REPL will compile the method and return with a success message. One possible source of errors is when a unicode character whose index is outside of the standard ascii range is inadvertently used. For example using En dash (code 8211) instead of the minus sign. In such cases you will have to manually edit the input to use the ascii characater.
 
 We shall now code everybody's favourite recursive method:
 
+'''
 public int Fib(int i)
  {
    if (i == 0) return 0;
    if (i == 1) return 1;
    return Fib(i - 1) + Fib(i - 2);
  }
+'''
 
 Hint: a limited set of copy and paste editing operations are supported. So copy the above code into the clipboard, then click on the edit box in the REPL window, and press shift-insert. You can also use the mouse to highlight text in the REPL window. Position the mouse onto the text, hold the left button down and drag. Now doing a ctrl-shift will copy the text into the clipboard. Once the text is in the REPL window you do basic editing operations on it. The full range of (say) Visual Studio text editing abilities is not available; but you could always add them yourself:).
 
 Now position the cursor onto any line of this method and press shift enter. It will hopefully be compiled. Enter the expression:
 
+'''
 Fib(40)
+'''
 
 And press shift return. Now wait...
 
