@@ -1,6 +1,8 @@
 #Introduction
 
-KamimuCode presents CSharpEval, a lightweight C# Eval and Read-Evaluate-Print-Loop (REPL) program.
+I present CSharpEval, a lightweight C# Eval and Read-Evaluate-Print-Loop (REPL) program.
+
+This used to be on my own website kamimucode.com, however I have decided the website has out-lived its usefulness and so I am loading this code to Github. I won't be doing any more work on this project (my interests have moved on) so if you want to, feel free to copy it, give it your own name, and go for it!
 
 #What is this?
 
@@ -312,14 +314,14 @@ If all is well, the program will first run through its unit tests of its compile
 
 The CSharpEval project code can be configured in several ways. The minimal configuration provides only the compiler to turn the source code of a method into a delegate. The maximal configuration provides unit tests plus the full Repl environment together with dialogs for reporting compilation errors. The user chooses which configuration they want by the use of the conditional compilation symbols.
 
-* The Class;Dialog;Repl;Test sets up the full configuration. This uses all of the code in the zip file, except that each configuration has its own program file. This version of the program does all of the unit tests, then runs the Repl environment.
-* To run just the Repl without the unit tests, use the conditional compile symbols Class;Dialog;Repl. This configuration is what is used as the Repl program in the first article.
-* If you do not want to use the Repl in your application, but you do want to be able to create multiple methods that act as if they belong to an existing type, use the symbols Class;Dialog.
-* If you only want to create individual methods, use the symbol Dialog.
+* The *Class;Dialog;Repl;Test* sets up the full configuration. This uses all of the code in the zip file, except that each configuration has its own program file. This version of the program does all of the unit tests, then runs the Repl environment.
+* To run just the Repl without the unit tests, use the conditional compile symbols *Class;Dialog;Repl*. This configuration is what is used as the Repl program in the first article.
+* If you do not want to use the Repl in your application, but you do want to be able to create multiple methods that act as if they belong to an existing type, use the symbols *Class;Dialog*.
+* If you only want to create individual methods, use the symbol *Dialog*.
 
 In the first two cases above the Dialog symbol is essential. In the second two cases this symbol is optional. If it is used then error reporting is done by the pre-supplied error dialog. If this Dialog symbol is not used then:
 
-* If you want to compile methods to classes but use your own error logging, use the symbol Class.
+* If you want to compile methods to classes but use your own error logging, use the symbol *Class*.
 * If you want to compile single methods only and use your own error logging, do not use any conditional compile symbols at all. This last is the smallest configuration.
 
 Each of these configurations has its own Program file, thus allowing the configuration to be a stand-alone program. One of these configurations includes the units tests; normally you would not put these into any production program. The source code for the other four configurations can be placed into a production program. You will need to remove the Program file for each such configuration; the setup code in each has to be copied across to your code and modified to suit your needs.
@@ -508,10 +510,13 @@ This requires the type parameter to specify the return type. The parser instance
 
 To compile a statement and run it immediately, use the static method MakeMethod.DoStatement () in the same way. For example,
 
+```
 MakeMethod.DoStatement ( "StopwatchOn = true ; " ) ;
+```
 
 Note that in this case no type parameter is required.
-Compiling methods of a class
+
+#Compiling methods of a class
 
 To compile one or more methods and one or more fields that are to act as if they are members of a class, use the type MakeClass. This type is created with two actual parameters: the first is the TypeParser instance, the second is the list of lexical tokens that represents the source code. This instance now contains all of the information that allows a number of method and field definitions to act as if they are members of a class.
 
@@ -519,12 +524,15 @@ To obtain the delegates from this instance, the GetFunc and GetAction methods in
 
 First we define some variables to hold the delegates
 
+```
 Func<TestClass, int> getLength;
  Action<TestClass, int[]> setArray;
  Action<TestClass> actInit;
+```
 
 Now we create the MakeClass instance
 
+```
 MakeClass mc = new MakeClass(parser, LexList.Get(@"
    partial class TestClass
    {
@@ -538,16 +546,19 @@ MakeClass mc = new MakeClass(parser, LexList.Get(@"
  GetFunc<TestClass, int>("GetLength", out getLength).
  GetAction<TestClass, int[]>("SetArray", out setArray).
  GetAction<TestClass>("FieldsInitialiser", out actInit);
+```
 
 Notice the three calls to GetFunc and GetAction at the end. Each such call returns the class instance, so they can be chained together, or specified separately. Each call specifies the type of the class we are compiling to (in this case it is called TestClass), the name of the method, and an out parameter that collects the delegate.
 
 You will see a method in the above that was not explicitly specified - FieldsInitialiser. In a genuine C# class the fields are initialized automatically by the class itself. FieldsInitialiser does the equivalent for any fields you have added. If you haven't added any, then this call is not necessary. It is necessary after each time you compile in any more fields. This method can be called multiple times and it will only initialize the most recent new fields.
 
+```
 TestClass tc = new TestClass();
  actInit(tc);
  int[] thearray = new int[300];
  setArray(tc, thearray);
  int I = getLength(tc) ;
+```
 
 And this code demonstrates the delegates in use. It creates an instance of the TestClass, calls the FieldsInitialiser method on it, then uses the two compiled methods.
 
@@ -555,44 +566,50 @@ You need to keep in mind that the TestClass instance does not know anything abou
 
 In the next and last article in this series I present lots of examples.
 
-Examples
+#Examples
 
 In this article I will give examples of how to use the C# Eval code. For any usage the first thing you will need to do is to choose the configuration. Each of the five configurations is chosen by specifying the appropriate conditional symbols in the project properties. As a refresher, the possible configurations are:
 
-    Class;Dialog;Repl;Test sets up the full Repl program plus all unit tests. The unit tests are only useful if you are extending the compiler or you are debugging. In such a case you will use the full program as is.
-    Class;Dialog;Repl runs only the Repl without unit tests.
-    Class;Dialog allows the compilation of multiple methods and fields and attaches them to a class instance. This uses the pre-supplied error handling dialogs.
-    Class allows the compilation of multiple methods and fields and attaches them to a class instance. You need to provide your own error handling code.
-    Dialog allows only the compilation of individual methods. This uses the pre-supplied error handling dialogs.
-    No conditional symbols at all will allow only the compilation of individual methods. You need to provide your own error handling code.
+* *Class;Dialog;Repl;Test* sets up the full Repl program plus all unit tests. The unit tests are only useful if you are extending the compiler or you are debugging. In such a case you will use the full program as is.
+* *Class;Dialog;Repl* runs only the Repl without unit tests.
+* *Class;Dialog* allows the compilation of multiple methods and fields and attaches them to a class instance. This uses the pre-supplied error handling dialogs.
+* *Class* allows the compilation of multiple methods and fields and attaches them to a class instance. You need to provide your own error handling code.
+* *Dialog* allows only the compilation of individual methods. This uses the pre-supplied error handling dialogs.
+* No conditional symbols at all will allow only the compilation of individual methods. You need to provide your own error handling code.
 
 Each configuration has its own program file. For the two Repl configurations this program file will bring up the Repl dialog. For the other four configurations this program file does some tests and then exits. The code in these files gives useful examples of how to use the CsharpEval API.
 
 When incorporating the CsharpEval code into your complete program you have a number of choices:
 
-    Just compile the configuration of your choice as is. It will produce an .exe file, which can then be referenced by your project.
-    Remove the program files (those starting with 'Program_') and convert the CSharpEval project into a ClassLibrary (otherwise known as a .DLL file). This can now be referenced by your project.
-    Remove the program files, and optionally also remove any other files not wanted by your configuration, and drop the remaining files directly into a sub-directory of your project. You can leave the conditional compilation symbols as they are, or remove them and make sure that the files you are not using have been removed.
+* Just compile the configuration of your choice as is. It will produce an .exe file, which can then be referenced by your project.
+* Remove the program files (those starting with 'Program_') and convert the CSharpEval project into a ClassLibrary (otherwise known as a .DLL file). This can now be referenced by your project.
+* Remove the program files, and optionally also remove any other files not wanted by your configuration, and drop the remaining files directly into a sub-directory of your project. You can leave the conditional compilation symbols as they are, or remove them and make sure that the files you are not using have been removed.
 
 So let's do some examples. Note that all of these examples appear as a single file in the download for this article. They have been slightly expanded from the demonstration code that appears in this article; the examples have been placed into methods and arranged as unit tests. The best way to test these is to create a new Visual Studio project containing the CsharpEval code, set the configuration to the full Repl, and also drop into this project the Examples.cs file. Now you can run the Repl, and from the Repl command line explicitly call any of these examples.
 Namespace
 
 All of the CsharpEval code files use the Kamimu namespace. It is assumed in all following examples that either a using statement like
 
+```
 using Kamimu;
+```
 
 is present at the top of the code file, or that your code is inside a
 
+```
 namespace Kamimu
  {
    ...
  }
+```
 
 namespace scope.
-Setting up error handling
+
+#Setting up error handling
 
 If you are running any configuration with the Dialog conditional symbol, you will firstly require a statement like
 
+```
 LexToken.ShowError = (msg, theList) =>
  {
    new LexErrorDialog()
@@ -601,23 +618,28 @@ LexToken.ShowError = (msg, theList) =>
      CompilerList = theList,
    }.Show();
  };
+```
 
 This needs to be executed once at program initialisation. ShowDialog is a static field in the LexToken class and is called to display any errors that CsharpEval may find.
 
 If you are running a configuration without Dialog, you will need to hook up your own error handling. A possible example is
 
+```
 LexToken.ShowError = (msg, theList) =>
  {
    MessageBox.Show (
      msg + "\n" + theList.CodeFormat ,
      "Error found" ) ;
  };
+```
 
 Naturally you may alter this to your requirements.
-Creating a TypeParser
+
+#Creating a TypeParser
 
 You always need at least one TypeParser instance. This specifies to CsharpEval the default namespaces and the referenced assemblies to use. You can have as many as you like, depending upon your requirements. Here is an example:
 
+```
 TypeParser parser = new TypeParser(
   Assembly.GetExecutingAssembly(),
   new List<string>()
@@ -635,11 +657,13 @@ TypeParser parser = new TypeParser(
     "Kamimu"
   }
  );
+```
 
 The first parameter specifies in which assembly or assemblies the TypeParser will search for types. The TypeParser is set up to reference this assembly and all assemblies directly referred to by this assembly. This corresponds to the 'References' section of a Visual Studio project.
 
 The second parameter specifies the default namespaces to use. This corresponds to the 'using' statements at the start of a C# code file.
-Immediate compilation and execution of an expression or statement
+
+#Immediate compilation and execution of an expression or statement
 
 CsharpEval can compile and immediately execute the contents of string. For this to work you will need to set the default parser
 
