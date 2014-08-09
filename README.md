@@ -1250,4 +1250,4 @@ Remember, you must call the FieldsInitialiser method after every time a new fiel
 
 #License
 
-Article text is under the Creative Commons Zero license. Source codes are under the MIT license.
+This readme text is under the Creative Commons Zero license. Source codes are under the MIT license.
