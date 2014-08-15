@@ -24,9 +24,9 @@ In the following documentation I first introduce the C# REPL program; you can pu
 
 #C# Repl Program
 
-Download the zipped file called c-sharp-rep.zip. This contains an exe file which is an already compiled CsharpEval program that runs the REPL code. Naturally this will only work on a Windows machine. You will also need to have the .NET Framework 3.5 version installed.
+Download the contents of the directory c-sharp-rep. This contains an exe file which is an already compiled CsharpEval program that runs the REPL code. Naturally this will only work on a Windows machine. You will also need to have the .NET Framework 3.5 version installed.
 
-So unzip and run this program (no installation is required). You will be presented with an empty edit box. To start things off, enter the universal REPL test:
+So run this program (no installation is required). You will be presented with an empty edit box. To start things off, enter the universal REPL test:
 
 ```
 2+2
@@ -297,13 +297,13 @@ Before we proceed I wish to remind all developers to never ever directly expose 
 
 The steps needed to get an initial stand-alone version running on your machine are:
 
-* Download the source code. This is a zip file containing a loose collection of .cs text files.
+* Download the source code. This is in the directory c-sharp-eval and contains a collection of .cs text files.
 * Open your version of Visual Studio 2008 or 2010 and make a new C# project. Select the project kind to be WPF Application. Make sure you are using version 3.5 (or later) of the .Net Framework.
 * After the project is created, go to the Solutions Explorer and delete the Window1.xaml files and the App.xaml file. 
 
 The CSharpEval code supplies its own windowing and startup code.
 
-* Into this empty project copy the .cs files from the downloaded zip file.
+* Into this empty project copy the .cs files from the download.
 * Double click on the Properties folder in this project, and in the properties page click on the Build tab. In the build page enter the following text Class;Dialog;Repl;Test into the Conditional compilation symbols edit box.
 * Compile and run.
 * If you are using some other editor, you will need to take the appropriate steps to end up with a compiled WPF application using these files.
@@ -314,8 +314,8 @@ If all is well, the program will first run through its unit tests of its compile
 
 The CSharpEval project code can be configured in several ways. The minimal configuration provides only the compiler to turn the source code of a method into a delegate. The maximal configuration provides unit tests plus the full Repl environment together with dialogs for reporting compilation errors. The user chooses which configuration they want by the use of the conditional compilation symbols.
 
-* The *Class;Dialog;Repl;Test* sets up the full configuration. This uses all of the code in the zip file, except that each configuration has its own program file. This version of the program does all of the unit tests, then runs the Repl environment.
-* To run just the Repl without the unit tests, use the conditional compile symbols *Class;Dialog;Repl*. This configuration is what is used as the Repl program in the first article.
+* The *Class;Dialog;Repl;Test* sets up the full configuration. This uses all of the source code files, except that each configuration has its own program file. This version of the program does all of the unit tests, then runs the Repl environment.
+* To run just the Repl without the unit tests, use the conditional compile symbols *Class;Dialog;Repl*. This configuration is what is used as the Repl program in the first part of this documentation.
 * If you do not want to use the Repl in your application, but you do want to be able to create multiple methods that act as if they belong to an existing type, use the symbols *Class;Dialog*.
 * If you only want to create individual methods, use the symbol *Dialog*.
 
@@ -381,7 +381,7 @@ The main use of this system is to programmatically compose some source code, the
 * You need to programmatically generate the source code. The CSharpEval only accepts source in the form of lexical tokens, so you compose the source as string fragments or tokens and call upon the LexListBuilder class to generate a LexList.
 * Finally you need to call MakeMethod or MakeClass to actually compile your generated source, and then retrieve and use the delegates.
 
-This sounds complicated, but don't worry. In the following article I will provide boiler-plate code for all of this. For now, however, we will continue with the documentation of the API.
+This sounds complicated, but don't worry. In the following part I will provide boiler-plate code for all of this. For now, however, we will continue with the documentation of the API.
 
 #TypeParser
 
@@ -564,11 +564,11 @@ And this code demonstrates the delegates in use. It creates an instance of the T
 
 You need to keep in mind that the TestClass instance does not know anything about these extra methods and fields. You could define two different MakeClass instances using the exact same code, creating the delegates as above. You will now be able to call these two separate groups of delegates and their effects will be totally independent of each other. (Unless, of course, your MakeClass code explicitly changes genuine C# fields in the TestClass instance. In this situation the two different groups will be able to affect each other.)
 
-In the next and last article in this series I present lots of examples.
+In the following I present lots of examples.
 
 #Examples
 
-In this article I will give examples of how to use the C# Eval code. For any usage the first thing you will need to do is to choose the configuration. Each of the five configurations is chosen by specifying the appropriate conditional symbols in the project properties. As a refresher, the possible configurations are:
+In this part I will give examples of how to use the C# Eval code. For any usage the first thing you will need to do is to choose the configuration. Each of the five configurations is chosen by specifying the appropriate conditional symbols in the project properties. As a refresher, the possible configurations are:
 
 * *Class;Dialog;Repl;Test* sets up the full Repl program plus all unit tests. The unit tests are only useful if you are extending the compiler or you are debugging. In such a case you will use the full program as is.
 * *Class;Dialog;Repl* runs only the Repl without unit tests.
@@ -585,8 +585,9 @@ When incorporating the CsharpEval code into your complete program you have a num
 * Remove the program files (those starting with 'Program_') and convert the CSharpEval project into a ClassLibrary (otherwise known as a .DLL file). This can now be referenced by your project.
 * Remove the program files, and optionally also remove any other files not wanted by your configuration, and drop the remaining files directly into a sub-directory of your project. You can leave the conditional compilation symbols as they are, or remove them and make sure that the files you are not using have been removed.
 
-So let's do some examples. Note that all of these examples appear as a single file in the download for this article. They have been slightly expanded from the demonstration code that appears in this article; the examples have been placed into methods and arranged as unit tests. The best way to test these is to create a new Visual Studio project containing the CsharpEval code, set the configuration to the full Repl, and also drop into this project the Examples.cs file. Now you can run the Repl, and from the Repl command line explicitly call any of these examples.
-Namespace
+So let's do some examples. Note that all of these examples appear as a single file in the directory c-sharp-eval-examples. They have been slightly expanded from the demonstration code that appears in this part; the examples have been placed into methods and arranged as unit tests. The best way to test these is to create a new Visual Studio project containing the CsharpEval code, set the configuration to the full Repl, and also drop into this project the Examples.cs file. Now you can run the Repl, and from the Repl command line explicitly call any of these examples.
+
+#Namespace
 
 All of the CsharpEval code files use the Kamimu namespace. It is assumed in all following examples that either a using statement like
 
@@ -1257,6 +1258,6 @@ All of the source code I publish for CSharpEval and make available for download 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#Text Article License
+#Text License
 
-All of the text articles I publish on this site are under the Creative Commons Zero license, to the extent possible under law, David Wynne has waived all copyright and related or neighboring rights to this work.
+All of the text I publish for this program are under the Creative Commons Zero license, to the extent possible under law, David Wynne has waived all copyright and related or neighboring rights to this work.
