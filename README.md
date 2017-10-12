@@ -1,28 +1,28 @@
-#Introduction
+# Introduction
 
 I present CSharpEval, a lightweight C# Eval and Read-Evaluate-Print-Loop (REPL) program.
 
 This used to be on my own website kamimucode.com, however I have decided the website has out-lived its usefulness and so I am loading this code to Github. I won't be doing any more work on this project (my interests have moved on) so if you want to, feel free to copy it, give it your own name, and go for it!
 
-#What is this?
+## What is this?
 
 The CSharpEval source code can be included into any C# program. It gives you the ability to compile the contents of a text string containing some C# code and produce a method delegate. This is done at execution time. This delegate is callable from within the executing program, and the newly compiled code can access any of the public resources of the parent program, such as methods and fields and types.
 
-#Why is this useful?
+## Why is this useful?
 
 * Ideal for implementing small Domain Specific Languages (DSL): It allows you to compile from the DSL code to standard C# code, instead of having to compile all the way from the DSL code to Microsoft Intermediate Language (MIL) instructions.
 * Great for meta-programming in the .Net environment: Instead of using lots of Reflection calls such as Type.GetField, Type.GetMethod, Activator.CreateInstance, GetValue and Invoke,you simply compose a small C# source code method and evaluate it using CSharpEval to create a dynamic method delegate.
 * Extremely handy for debugging tasks which require deep on-the-fly analysis of complex data structures: Instead of using the symbolic debugger to laboriously track through layers of references and manually scanning large arrays, you can run the C# REPL and compose a method in C# to query and present the required data. The call to the REPL dialog can be placed into the source code at the point of interest before compiling the program, or it could be inserted at debug time.
 * There are rumors on the Web that version 5 or so of C# will include Compiler-as-a-Service capabilities. Presumably this includes Eval and maybe some sort of REPL. So get yourself a head start!
 
-#How complete is this compiler?
+## How complete is this compiler?
 
 I do not implement the full C# language in CsharpEval; however I have done my best to implement a very useful subset. In particular I have not attempted to implement any of Linq, nor yield return or exception handling. Neither can you define new classes. The standard vanilla features of C# such as statements, expressions, conditionals, loops, and the most commonly used operators, etc are supported.
 Getting started
 
 In the following documentation I first introduce the C# REPL program; you can put the C# Eval through its paces and see how well it works. Then the second part discusses the CsharpEval API, and the third part gives complete examples on how to use the CsharpEval code in your programs.
 
-#C# Repl Program
+## C# Repl Program
 
 Download the contents of the directory c-sharp-rep. This contains an exe file which is an already compiled CsharpEval program that runs the REPL code. Naturally this will only work on a Windows machine. You will also need to have the .NET Framework 3.5 version installed.
 
@@ -117,7 +117,7 @@ int NewInt ;
 
 will also be accepted but it will not appear to do anything. This is because, without the public keyword in front of it, the REPL assumes this is a statement. REPL will take this statement, place it inside a method and compile and execute the method. Since this method has only a single local variable and does nothing else, then nothing will happen.
 
-#Some implementation detail
+## Some implementation detail
 
 CSharpEval can compile stand-alone methods. It can also compile a group of methods and fields and pretend that they are part of an existing class. An instance of this existing class is supplied by the calling code when calling the CSharpEval API.
 
@@ -167,7 +167,7 @@ return StopwatchOn ?
 
 Press shift return and the method will be updated to this new code. Now go to the IsStopwatchOn() expression and press shift return again. The new message should be printed. You can turn off the StopwatchOn flag and test again to see the expected result.
 
-#Summary so far
+## Summary so far
 
 * To enter an expression for immediate evaluation, type the expression and press shift return. The expression may run across more than one line. Do not terminate the expression with a semicolon.
 * To enter a statement for immediate evaluation, type the statement and terminate with a semicolon. Then press shift return. Multiple statements may be typed in at once, and may run over more than one line.
@@ -175,7 +175,7 @@ Press shift return and the method will be updated to this new code. Now go to th
 * To enter a method, type in the full method, always starting with either a private or public keyword. Then press shift return. The REPL editor will count open and close curly brackets and it will only compile the method when all of the brackets are properly matching.
 * Multiple fields and methods can be entered into the one edit box. Just enter them and when finished, press shift return.
 
-#Saving and restoring your work
+## Saving and restoring your work
 
 The user can save and restore the contents of the REPL window, and can also copy the contents to a .cs file. The following commands at the REPL command prompt are provided:
 
@@ -203,7 +203,7 @@ The REPL program is mainly present as a means of testing the Eval compiler, alth
 
 When it is working to some degree you would use SaveCode () to write the new source to a file, then copy and paste this into the final program.
 
-#How fast is this code?
+## How fast is this code?
 
 In the above a Fibonacci method was used as an example. On my machine it takes about 15 seconds to do Fib(40). Just by chance there is a Fib method in the CSharpEval source code. It is in the TestProgram class of the full test version. It is a public static method, and so we can call it from the REPL code:
 
@@ -270,7 +270,7 @@ So in conclusion:
 
 This part describes the API, while the last part describes detailed examples.
 
-#Some features
+## Some features
 
 * Copyrighted under the MIT open source license, and thus usable in any situation, commercial or not.
 * The CSharpEval compiled code has full access to the public types and variables of the parent program.
@@ -289,11 +289,11 @@ Of course, nothing is without cost, even if it is free:
 * The compiled code cannot be debugged by standard debuggers; you have to use print (or MessageBox.Show) statements.
 * In other words this is only a poor-man's version of the anticipated Compiler-as-a-Service; but it is all we might have until C# version 5.0.
 
-#Security considerations
+## Security considerations
 
 Before we proceed I wish to remind all developers to never ever directly expose the C# Eval interface to anonymous users. Direct evaluation of arbitrary C# code is an excellent vector for un-authorised access to your machine! Make sure that all input from anonymous users is heavily pre-processed to prevent any such attacks.
 
-#Setting up a demonstration C# project with CSharpEval
+## Setting up a demonstration C# project with CSharpEval
 
 The steps needed to get an initial stand-alone version running on your machine are:
 
@@ -310,7 +310,7 @@ The CSharpEval code supplies its own windowing and startup code.
 
 If all is well, the program will first run through its unit tests of its compiler, and then it will bring up the Repl dialog box. If you get to this point then you have a working copy. Now we need to talk about the different configurations that are possible.
 
-#Different configurations
+## Different configurations
 
 The CSharpEval project code can be configured in several ways. The minimal configuration provides only the compiler to turn the source code of a method into a delegate. The maximal configuration provides unit tests plus the full Repl environment together with dialogs for reporting compilation errors. The user chooses which configuration they want by the use of the conditional compilation symbols.
 
@@ -326,7 +326,7 @@ In the first two cases above the Dialog symbol is essential. In the second two c
 
 Each of these configurations has its own Program file, thus allowing the configuration to be a stand-alone program. One of these configurations includes the units tests; normally you would not put these into any production program. The source code for the other four configurations can be placed into a production program. You will need to remove the Program file for each such configuration; the setup code in each has to be copied across to your code and modified to suit your needs.
 
-#The Repl evaluation process
+## The Repl evaluation process
 
 Running the CsharpEval code in the Repl configuration allows you to enter C# code and have it executed immediately. Behind the scenes the Repl program takes your code, surrounds it with some extra code and then compiles and runs it. If the code you type in is an expression, then the Repl will generate the following code:
 
@@ -368,7 +368,7 @@ public List<object> Fields ;
 
 if the programmer wants to add fields as well as methods. If the programmer does not want to add fields this is not required.
 
-#Using Eval
+## Using Eval
 
 The main use of this system is to programmatically compose some source code, then compile it and obtain a delegate.
 
@@ -383,7 +383,7 @@ The main use of this system is to programmatically compose some source code, the
 
 This sounds complicated, but don't worry. In the following part I will provide boiler-plate code for all of this. For now, however, we will continue with the documentation of the API.
 
-#TypeParser
+## TypeParser
 
 Every real C# program needs to have a list of references specifying which assemblies are to be included into the final compilation. Each source file in a C# program can have a list of using statements, which specify which namespaces are to be used without having to explicitly specify the full namespace name.
 
@@ -425,7 +425,7 @@ TypeParser.DefaultParser = parser;
 
 This default parser is used by some of the CsharpEval methods.
 
-#Lexical analysis
+## Lexical analysis
 
 The CSharpEval compiler takes the source in the form of a LexList instance. A LexList instance is a list of tokens of type LexToken. To build the final LexList the helper class LexListBuilder is used. The typical pattern of use for this builder is
 
@@ -485,7 +485,7 @@ and the final string contents will therefore be
 
 string s = "contents" ; char ch = 'a' ;
 
-#Compiling a method
+## Compiling a method
 
 To compile a single method, use the static method MakeMethod.Compile. This method has a single type parameter which specifies the type of the delegate to be returned. It has two actual parameters, the first is the TypeParser instance, the second is the list of lexical tokens which represents the source code. An example is:
 
@@ -516,7 +516,7 @@ MakeMethod.DoStatement ( "StopwatchOn = true ; " ) ;
 
 Note that in this case no type parameter is required.
 
-#Compiling methods of a class
+## Compiling methods of a class
 
 To compile one or more methods and one or more fields that are to act as if they are members of a class, use the type MakeClass. This type is created with two actual parameters: the first is the TypeParser instance, the second is the list of lexical tokens that represents the source code. This instance now contains all of the information that allows a number of method and field definitions to act as if they are members of a class.
 
@@ -566,7 +566,7 @@ You need to keep in mind that the TestClass instance does not know anything abou
 
 In the following I present lots of examples.
 
-#Examples
+## Examples
 
 In this part I will give examples of how to use the C# Eval code. For any usage the first thing you will need to do is to choose the configuration. Each of the five configurations is chosen by specifying the appropriate conditional symbols in the project properties. As a refresher, the possible configurations are:
 
@@ -587,7 +587,7 @@ When incorporating the CsharpEval code into your complete program you have a num
 
 So let's do some examples. Note that all of these examples appear as a single file in the directory c-sharp-eval-examples. They have been slightly expanded from the demonstration code that appears in this part; the examples have been placed into methods and arranged as unit tests. The best way to test these is to create a new Visual Studio project containing the CsharpEval code, set the configuration to the full Repl, and also drop into this project the Examples.cs file. Now you can run the Repl, and from the Repl command line explicitly call any of these examples.
 
-#Namespace
+## Namespace
 
 All of the CsharpEval code files use the Kamimu namespace. It is assumed in all following examples that either a using statement like
 
@@ -606,7 +606,7 @@ namespace Kamimu
 
 namespace scope.
 
-#Setting up error handling
+## Setting up error handling
 
 If you are running any configuration with the Dialog conditional symbol, you will firstly require a statement like
 
@@ -636,7 +636,7 @@ LexToken.ShowError = (msg, theList) =>
 
 Naturally you may alter this to your requirements.
 
-#Creating a TypeParser
+## Creating a TypeParser
 
 You always need at least one TypeParser instance. This specifies to CsharpEval the default namespaces and the referenced assemblies to use. You can have as many as you like, depending upon your requirements. Here is an example:
 
@@ -664,7 +664,7 @@ The first parameter specifies in which assembly or assemblies the TypeParser wil
 
 The second parameter specifies the default namespaces to use. This corresponds to the 'using' statements at the start of a C# code file.
 
-#Immediate compilation and execution of an expression or statement
+## Immediate compilation and execution of an expression or statement
 
 CsharpEval can compile and immediately execute the contents of string. For this to work you will need to set the default parser
 
@@ -761,7 +761,7 @@ MakeMethod.DoStatement(@"
 
 After execution the counter variable should end up with 3 in it. Note that the two variables are assumed to be declared as instance (or static) fields in the enclosing class. CsharpEval cannot access directly the local variables of a method.
 
-#Compiling a single method to produce a delegate
+## Compiling a single method to produce a delegate
 
 When compiling a method to a delegate, you need to specify the method's signature as a generic type to the CsharpEval MakeMethod class. Here is an example of a function that takes an int parameter and returns a string:
 
@@ -836,7 +836,7 @@ After these three calls the contents of StrField should be
 
 And, as in one of the examples above, you can surround the MakeMethod.Compile call with try brackets if there is any chance that the compilation may fail.
 
-#Different ways of generating a LexList
+## Different ways of generating a LexList
 
 The MakeMethod.Compile method used above expects a LexList as its parameter.
 
@@ -1249,7 +1249,7 @@ Action<TestClass, string> AddString;
 
 Remember, you must call the FieldsInitialiser method after every time a new field is added to the class, and this must be called for every instance of the class you are using.
 
-#Code License
+# Code License
 
 All of the source code I publish for CSharpEval and make available for download is licensed under the MIT license
 
@@ -1258,6 +1258,6 @@ All of the source code I publish for CSharpEval and make available for download 
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#Text License
+# Text License
 
 All of the text I publish for this program are under the Creative Commons Zero license, to the extent possible under law, David Wynne has waived all copyright and related or neighboring rights to this work.
